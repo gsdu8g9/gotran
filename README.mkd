@@ -27,7 +27,7 @@ Options:
 
 Example
 ------
-``
+```
 $ echo Hello | gotran en ja
 こんにちは
 ```
