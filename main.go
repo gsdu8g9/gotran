@@ -114,9 +114,9 @@ func _main() (int, error) {
 		version()
 		return 2, nil
 	case flag.NArg() < 1:
-		return 1, fmt.Errorf("no specify FROM and TO language")
+		return 2, fmt.Errorf("no specify FROM and TO language")
 	case flag.NArg() < 2:
-		return 1, fmt.Errorf("no specify TO language")
+		return 2, fmt.Errorf("no specify TO language")
 	}
 
 	t := NewTranslator(flag.Arg(0), flag.Arg(1))
