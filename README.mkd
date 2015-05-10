@@ -2,6 +2,11 @@ gotran
 ===
 Translate FILE(s), or standard input.
 
+```
+$ echo Hello | gotran en ja
+こんにちは
+```
+
 Installation
 -----
 `gotran` can be easily installed as an executable.
@@ -27,10 +32,6 @@ Options:
 
 Example
 ------
-```
-$ echo Hello | gotran en ja
-こんにちは
-```
 
 ```
 $ echo -e "こんにちは\n世界" | gotran ja en
