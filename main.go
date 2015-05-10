@@ -70,11 +70,11 @@ func (t *Translator) fetchResult(src []byte) ([]byte, error) {
 
 func (t *Translator) extractText(b []byte) []byte {
 	var buf [][]byte
-	for _, a := range FIRST_ARRAY.FindAllSubmatch(b, -1) {
-		for _, s := range FIRST_STRING.FindAllSubmatch(a[0], -1) {
-			s[1] = NEW_LINE.ReplaceAll(s[1], []byte("\n"))
-			buf = append(buf, s[1])
-		}
+
+	a := FIRST_ARRAY.Find(b)
+	for _, s := range FIRST_STRING.FindAllSubmatch(a, -1) {
+		s[1] = NEW_LINE.ReplaceAll(s[1], []byte("\n"))
+		buf = append(buf, s[1])
 	}
 	return bytes.Join(buf, []byte(""))
 }
