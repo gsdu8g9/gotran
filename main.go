@@ -140,8 +140,9 @@ func _main() (int, error) {
 }
 
 func main() {
-	if exitCode, err := _main(); err != nil {
+	exitCode, err := _main()
+	if err != nil {
 		fmt.Fprintln(os.Stderr, "gotran:", err)
-		os.Exit(exitCode)
 	}
+	os.Exit(exitCode)
 }
