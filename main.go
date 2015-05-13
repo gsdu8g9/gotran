@@ -30,9 +30,7 @@ v0.1.1
 
 var (
 	TRANSLATE_URL = "http://translate.google.com/translate_a/t"
-	FIRST_ARRAY   = regexp.MustCompile(`^\[\[\[.+?\]\],`)
 	FIRST_STRING  = regexp.MustCompile(`\["((?:[^\\"]|\\.)*)",`)
-	NEW_LINE      = regexp.MustCompile(`\\n`)
 )
 
 type Translator struct {
@@ -71,9 +69,9 @@ func (t *Translator) fetchResult(src []byte) ([]byte, error) {
 func (t *Translator) extractText(b []byte) []byte {
 	var buf [][]byte
 
-	a := FIRST_ARRAY.Find(b)
+	a := b[:bytes.Index(b, []byte("]],"))]
 	for _, s := range FIRST_STRING.FindAllSubmatch(a, -1) {
-		s[1] = NEW_LINE.ReplaceAll(s[1], []byte("\n"))
+		s[1] = bytes.Replace(s[1], []byte("\\n"), []byte("\n"), -1)
 		buf = append(buf, s[1])
 	}
 	return bytes.Join(buf, []byte(""))
