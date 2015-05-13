@@ -30,7 +30,7 @@ v0.1.1
 
 var (
 	TRANSLATE_URL = "http://translate.google.com/translate_a/t"
-	FIRST_ARRAY   = regexp.MustCompile(`^\[\[\[.+?\]\],,"`)
+	FIRST_ARRAY   = regexp.MustCompile(`^\[\[\[.+?\]\],`)
 	FIRST_STRING  = regexp.MustCompile(`\["((?:[^\\"]|\\.)*)",`)
 	NEW_LINE      = regexp.MustCompile(`\\n`)
 )
