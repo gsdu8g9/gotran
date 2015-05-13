@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"regexp"
+	"strconv"
 )
 
 func usage() {
@@ -30,7 +31,7 @@ v0.1.1
 
 var (
 	TRANSLATE_URL = "http://translate.google.com/translate_a/t"
-	FIRST_STRING  = regexp.MustCompile(`\["((?:[^\\"]|\\.)*)",`)
+	FIRST_STRING  = regexp.MustCompile(`\[("(?:[^\\"]|\\.)*"),`)
 )
 
 type Translator struct {
@@ -66,15 +67,18 @@ func (t *Translator) fetchResult(src []byte) ([]byte, error) {
 	return b, nil
 }
 
-func (t *Translator) extractText(b []byte) []byte {
+func (t *Translator) extractText(b []byte) ([]byte, error) {
 	var buf [][]byte
 
 	a := b[:bytes.Index(b, []byte("]],"))]
 	for _, s := range FIRST_STRING.FindAllSubmatch(a, -1) {
-		s[1] = bytes.Replace(s[1], []byte("\\n"), []byte("\n"), -1)
-		buf = append(buf, s[1])
+		t, err := strconv.Unquote(string(s[1]))
+		if err != nil {
+			return nil, err
+		}
+		buf = append(buf, []byte(t))
 	}
-	return bytes.Join(buf, []byte(""))
+	return bytes.Join(buf, []byte("")), nil
 }
 
 func (t *Translator) Translate(src []byte) ([]byte, error) {
@@ -82,7 +86,7 @@ func (t *Translator) Translate(src []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return t.extractText(b), nil
+	return t.extractText(b)
 }
 
 func do(t *Translator, f *os.File) error {
