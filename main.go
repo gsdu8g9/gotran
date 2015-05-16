@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -89,8 +90,8 @@ func (t *Translator) Translate(src []byte) ([]byte, error) {
 	return t.extractText(b)
 }
 
-func do(t *Translator, f *os.File) error {
-	src, err := ioutil.ReadAll(f)
+func do(t *Translator, r io.Reader) error {
+	src, err := ioutil.ReadAll(r)
 	if err != nil {
 		return err
 	}
@@ -125,17 +126,17 @@ func _main() error {
 	if flag.NArg() < 3 {
 		return do(t, os.Stdin)
 	}
+
+	var in []io.Reader
 	for _, name := range flag.Args()[2:] {
 		f, err := os.Open(name)
 		if err != nil {
 			return err
 		}
 		defer f.Close()
-		if err = do(t, f); err != nil {
-			return err
-		}
+		in = append(in, f)
 	}
-	return nil
+	return do(t, io.MultiReader(in...))
 }
 
 func main() {
