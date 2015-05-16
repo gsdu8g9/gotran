@@ -103,7 +103,7 @@ func do(t *Translator, f *os.File) error {
 	return nil
 }
 
-func _main() (int, error) {
+func _main() error {
 	isHelp := flag.Bool("help", false, "")
 	isVersion := flag.Bool("version", false, "")
 	flag.Usage = usage
@@ -111,40 +111,36 @@ func _main() (int, error) {
 	switch {
 	case *isHelp:
 		usage()
-		return 2, nil
+		return nil
 	case *isVersion:
 		version()
-		return 2, nil
+		return nil
 	case flag.NArg() < 1:
-		return 2, fmt.Errorf("no specify FROM and TO language")
+		return fmt.Errorf("no specify FROM and TO language")
 	case flag.NArg() < 2:
-		return 2, fmt.Errorf("no specify TO language")
+		return fmt.Errorf("no specify TO language")
 	}
 
 	t := NewTranslator(flag.Arg(0), flag.Arg(1))
 	if flag.NArg() < 3 {
-		if err := do(t, os.Stdin); err != nil {
-			return 1, err
-		}
-		return 0, nil
+		return do(t, os.Stdin)
 	}
 	for _, name := range flag.Args()[2:] {
 		f, err := os.Open(name)
 		if err != nil {
-			return 1, err
+			return err
 		}
 		defer f.Close()
 		if err = do(t, f); err != nil {
-			return 1, err
+			return err
 		}
 	}
-	return 0, nil
+	return nil
 }
 
 func main() {
-	exitCode, err := _main()
-	if err != nil {
+	if err := _main(); err != nil {
 		fmt.Fprintln(os.Stderr, "gotran:", err)
+		os.Exit(1)
 	}
-	os.Exit(exitCode)
 }
