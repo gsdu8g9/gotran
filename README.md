@@ -33,6 +33,22 @@ Options:
 	--version    print the version
 ```
 
+Language
+--------
+
+- english - en
+- japanese - ja
+- polish - pl
+- french - fr
+- spanish - es
+- slovakian - sk
+- chinese - zh
+- russian - ru
+- automatic source language detection - auto
+
+Other language is
+[here](https://developers.google.com/translate/v2/using_rest#language-params).
+
 Example
 -------
 
