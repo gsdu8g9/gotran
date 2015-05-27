@@ -49,12 +49,12 @@ func NewTranslator(from, to string) *Translator {
 
 func (t *Translator) fetchResult(src []byte) ([]byte, error) {
 	res, err := http.PostForm(TRANSLATE_URL, url.Values{
-		"sl":     []string{t.from},
-		"tl":     []string{t.to},
-		"ie":     []string{"UTF-8"},
-		"oe":     []string{"UTF-8"},
-		"client": []string{"t"},
-		"text":   []string{string(src)},
+		"sl":     {t.from},
+		"tl":     {t.to},
+		"ie":     {"UTF-8"},
+		"oe":     {"UTF-8"},
+		"client": {"t"},
+		"text":   {string(src)},
 	})
 	if err != nil {
 		return nil, err
