@@ -1,5 +1,6 @@
 gotran
-===
+======
+
 Translate FILE(s), or standard input.
 
 ```
@@ -8,7 +9,8 @@ $ echo Hello | gotran en ja
 ```
 
 Installation
------
+------------
+
 `gotran` can be easily installed as an executable.
 Download the latest
 [compiled binaries](https://github.com/kusabashira/gotran/releases)
@@ -21,7 +23,8 @@ $ go get github.com/kusabashira/gotran
 ```
 
 Usage
-------
+-----
+
 ```
 $ gotran [OPTION]... FROM TO [FILE]...
 
@@ -31,7 +34,7 @@ Options:
 ```
 
 Example
-------
+-------
 
 ```
 $ echo -e "こんにちは\n世界" | gotran ja en
@@ -50,9 +53,11 @@ $ gotran en ja foo bar
 ```
 
 License
---------
+-------
+
 MIT License
 
 Author
--------
+------
+
 wara <kusabashira227@gmail.com>
