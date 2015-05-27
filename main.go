@@ -19,8 +19,8 @@ Usage: gotran [OPTION]... FROM TO [FILE]...
 Translate FILE(s), or standard input.
 
 Options:
-	--help       show this help message
-	--version    print the version
+	-h, --help       show this help message
+	-v, --version    print the version
 `[1:])
 }
 
@@ -105,15 +105,18 @@ func do(t *Translator, r io.Reader) error {
 }
 
 func _main() error {
-	isHelp := flag.Bool("help", false, "")
-	isVersion := flag.Bool("version", false, "")
+	var isHelp, isVersion bool
+	flag.BoolVar(&isHelp, "h", false, "")
+	flag.BoolVar(&isHelp, "help", false, "")
+	flag.BoolVar(&isVersion, "v", false, "")
+	flag.BoolVar(&isVersion, "version", false, "")
 	flag.Usage = usage
 	flag.Parse()
 	switch {
-	case *isHelp:
+	case isHelp:
 		usage()
 		return nil
-	case *isVersion:
+	case isVersion:
 		version()
 		return nil
 	case flag.NArg() < 1:
@@ -121,8 +124,9 @@ func _main() error {
 	case flag.NArg() < 2:
 		return fmt.Errorf("no specify TO language")
 	}
+	from, to := flag.Arg(0), flag.Arg(1)
 
-	t := NewTranslator(flag.Arg(0), flag.Arg(1))
+	t := NewTranslator(from, to)
 	if flag.NArg() < 3 {
 		return do(t, os.Stdin)
 	}
