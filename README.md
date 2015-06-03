@@ -8,6 +8,10 @@ $ echo Hello | gotran en ja
 こんにちは
 ```
 
+It use same way as
+[pawurb/termit](https://github.com/pawurb/termit)
+to fetch translated result.
+
 Installation
 ------------
 
