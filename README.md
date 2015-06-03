@@ -15,16 +15,13 @@ to fetch translated result.
 Installation
 ------------
 
-`gotran` can be easily installed as an executable.
-Download the latest
-[compiled binaries](https://github.com/kusabashira/gotran/releases)
-and put it anywhere in your executable path.
+###compiled binaries
 
-Or, if you've done Go development before
-and your $GOPATH/bin directory is already in your PATH:
-```
-$ go get github.com/kusabashira/gotran
-```
+See [releases](https://github.com/kusabashira/gotran/releases)
+
+###go get
+
+	$ go get github.com/kusabashira/gotran
 
 Usage
 -----
