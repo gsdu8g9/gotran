@@ -62,11 +62,16 @@ func ParseOption(args []string) (opt *Option, err error) {
 	case 0:
 		return nil, fmt.Errorf("no specify FROM and TO language")
 	case 1:
-		return nil, fmt.Errorf("no specify TO language")
+		lang := flag.Arg(0)
+		if len(lang) != 4 {
+			return nil, fmt.Errorf("no specify TO language")
+		}
+		opt.From, opt.To = lang[0:2], lang[2:4]
+		opt.Files = flag.Args()[1:]
+	default:
+		opt.From, opt.To = flag.Arg(0), flag.Arg(1)
+		opt.Files = flag.Args()[2:]
 	}
-	opt.From, opt.To = flag.Arg(0), flag.Arg(1)
-	opt.Files = flag.Args()[2:]
-
 	return opt, nil
 }
 
