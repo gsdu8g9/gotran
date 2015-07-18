@@ -40,6 +40,31 @@ type Option struct {
 	Files     []string
 }
 
+func ParseOption(args []string) (opt *Option, err error) {
+	opt = &Option{}
+	f := flag.NewFlagSet("gotran", flag.ContinueOnError)
+	f.SetOutput(ioutil.Discard)
+
+	f.BoolVar(&opt.IsHelp, "h", false, "")
+	f.BoolVar(&opt.IsHelp, "help", false, "")
+	f.BoolVar(&opt.IsVersion, "v", false, "")
+	f.BoolVar(&opt.IsVersion, "version", false, "")
+
+	if err = f.Parse(args); err != nil {
+		return nil, err
+	}
+	switch flag.NArg() {
+	case 0:
+		return nil, fmt.Errorf("no specify FROM and TO language")
+	case 1:
+		return nil, fmt.Errorf("no specify TO language")
+	}
+	opt.From, opt.To = flag.Arg(0), flag.Arg(1)
+	opt.Files = flag.Args()[2:]
+
+	return opt, nil
+}
+
 func do(t *Translator, r io.Reader) error {
 	src, err := ioutil.ReadAll(r)
 	if err != nil {
