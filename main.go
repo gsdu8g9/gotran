@@ -57,6 +57,9 @@ func ParseOption(args []string) (opt *Option, err error) {
 	if err != nil {
 		return nil, err
 	}
+	if opt.IsHelp || opt.IsVersion {
+		return opt, nil
+	}
 	switch len(leave) {
 	case 0:
 		return nil, fmt.Errorf("no specify FROM and TO language")
