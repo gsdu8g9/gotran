@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -9,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jessevdk/go-flags"
 	"github.com/yuya-takeyama/argf"
 )
 
@@ -41,9 +41,9 @@ func printErr(err error) {
 }
 
 type Option struct {
-	IsHelp    bool
-	IsVersion bool
-	Expr      string
+	Expr      string `short:"e" long:"expr"`
+	IsHelp    bool   `short:"h" long:"help"`
+	IsVersion bool   `short:"v" long:"version"`
 	From      string
 	To        string
 	Reader    io.Reader
@@ -51,47 +51,40 @@ type Option struct {
 
 func ParseOption(args []string) (opt *Option, err error) {
 	opt = &Option{}
-	f := flag.NewFlagSet("gotran", flag.ContinueOnError)
-	f.SetOutput(ioutil.Discard)
+	f := flags.NewParser(opt, flags.PassDoubleDash)
 
-	f.StringVar(&opt.Expr, "e", "", "")
-	f.StringVar(&opt.Expr, "expr", "", "")
-	f.BoolVar(&opt.IsHelp, "h", false, "")
-	f.BoolVar(&opt.IsHelp, "help", false, "")
-	f.BoolVar(&opt.IsVersion, "v", false, "")
-	f.BoolVar(&opt.IsVersion, "version", false, "")
-	if err = f.Parse(args); err != nil {
+	leave, err := f.ParseArgs(args)
+	if err != nil {
 		return nil, err
 	}
 
-	var startARGF int
-	switch f.NArg() {
+	var files []string
+	switch len(leave) {
 	case 0:
 		return nil, fmt.Errorf("no specify FROM and TO language")
 	case 1:
-		lang := f.Arg(0)
+		lang := leave[0]
 		if len(lang) != 4 {
 			return nil, fmt.Errorf("no specify TO language")
 		}
 		opt.From, opt.To = lang[0:2], lang[2:4]
-		startARGF = 1
+		files = leave[1:]
 	default:
-		opt.From, opt.To = f.Arg(0), f.Arg(1)
-		startARGF = 2
+		opt.From, opt.To = leave[0], leave[1]
+		files = leave[2:]
 	}
 
-	if opt.Expr != "" {
+	if opt.Expr == "" {
+		opt.Reader, err = argf.From(files)
+		if err != nil {
+			return nil, err
+		}
+	} else {
 		expr, err := strconv.Unquote(`"` + opt.Expr + `"`)
 		if err != nil {
 			return nil, err
 		}
 		opt.Reader = strings.NewReader(expr)
-	} else {
-		files := f.Args()[startARGF:]
-		opt.Reader, err = argf.From(files)
-		if err != nil {
-			return nil, err
-		}
 	}
 	return opt, nil
 }
