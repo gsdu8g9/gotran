@@ -23,6 +23,7 @@ Usage: gotran [OPTION]... FROM TO [FILE]...
 Translate FILE(s), or standard input.
 
 Options:
+	-e, --expr=TEXT  translate text
 	-h, --help       show this help message
 	-v, --version    print the version
 `[1:])
