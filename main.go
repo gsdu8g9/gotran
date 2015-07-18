@@ -57,34 +57,25 @@ func ParseOption(args []string) (opt *Option, err error) {
 	if err != nil {
 		return nil, err
 	}
-
-	var files []string
 	switch len(leave) {
 	case 0:
 		return nil, fmt.Errorf("no specify FROM and TO language")
 	case 1:
-		lang := leave[0]
-		if len(lang) != 4 {
-			return nil, fmt.Errorf("no specify TO language")
-		}
-		opt.From, opt.To = lang[0:2], lang[2:4]
-		files = leave[1:]
-	default:
-		opt.From, opt.To = leave[0], leave[1]
-		files = leave[2:]
+		return nil, fmt.Errorf("no specify TO language")
 	}
 
-	if opt.Expr == "" {
-		opt.Reader, err = argf.From(files)
-		if err != nil {
-			return nil, err
-		}
-	} else {
+	opt.From, opt.To = leave[0], leave[1]
+	if opt.Expr != "" {
 		expr, err := strconv.Unquote(`"` + opt.Expr + `"`)
 		if err != nil {
 			return nil, err
 		}
 		opt.Reader = strings.NewReader(expr)
+		return opt, nil
+	}
+	opt.Reader, err = argf.From(leave[2:])
+	if err != nil {
+		return nil, err
 	}
 	return opt, nil
 }
