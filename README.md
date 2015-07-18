@@ -57,6 +57,11 @@ Example
 $ echo -e "こんにちは\n世界" | gotran ja en
 Hello
 World
+
+$ gotran -e "こんにちは\n世界" jaen
+Hello
+World
+
 ```
 
 ```
