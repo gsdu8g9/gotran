@@ -80,31 +80,21 @@ func do(t *Translator, r io.Reader) error {
 }
 
 func _main() error {
-	var isHelp, isVersion bool
-	flag.BoolVar(&isHelp, "h", false, "")
-	flag.BoolVar(&isHelp, "help", false, "")
-	flag.BoolVar(&isVersion, "v", false, "")
-	flag.BoolVar(&isVersion, "version", false, "")
-	flag.Usage = usage
-	flag.Parse()
+	opt, err := ParseOption(os.Args[1:])
+	if err != nil {
+		return err
+	}
 	switch {
-	case isHelp:
+	case opt.IsHelp:
 		usage()
 		return nil
-	case isVersion:
+	case opt.IsVersion:
 		version()
 		return nil
-	case flag.NArg() < 1:
-		return fmt.Errorf("no specify FROM and TO language")
-	case flag.NArg() < 2:
-		return fmt.Errorf("no specify TO language")
 	}
-	from, to := flag.Arg(0), flag.Arg(1)
-	files := flag.Args()[2:]
 
-	t := NewTranslator(from, to)
-
-	r, err := argf.From(files)
+	t := NewTranslator(opt.From, opt.To)
+	r, err := argf.From(opt.Files)
 	if err != nil {
 		return err
 	}
