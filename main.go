@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/yuya-takeyama/argf"
 	"io"
 	"io/ioutil"
 	"os"
@@ -66,22 +67,15 @@ func _main() error {
 		return fmt.Errorf("no specify TO language")
 	}
 	from, to := flag.Arg(0), flag.Arg(1)
+	files := flag.Args()[2:]
 
 	t := NewTranslator(from, to)
-	if flag.NArg() < 3 {
-		return do(t, os.Stdin)
-	}
 
-	var in []io.Reader
-	for _, name := range flag.Args()[2:] {
-		f, err := os.Open(name)
-		if err != nil {
-			return err
-		}
-		defer f.Close()
-		in = append(in, f)
+	r, err := argf.From(files)
+	if err != nil {
+		return err
 	}
-	return do(t, io.MultiReader(in...))
+	return do(t, r)
 }
 
 func main() {
