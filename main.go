@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/yuya-takeyama/argf"
@@ -76,6 +77,12 @@ func ParseOption(args []string) (opt *Option, err error) {
 	default:
 		opt.From, opt.To = f.Arg(0), f.Arg(1)
 		opt.Files = f.Args()[2:]
+	}
+	if opt.Expr != "" {
+		opt.Expr, err = strconv.Unquote(`"` + opt.Expr + `"`)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return opt, nil
 }
