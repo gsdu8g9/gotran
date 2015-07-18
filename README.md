@@ -59,7 +59,7 @@ $ echo -e "こんにちは\n世界" | gotran ja en
 Hello
 World
 
-$ gotran -e "こんにちは\n世界" jaen
+$ gotran ja en -e "こんにちは\n世界"
 Hello
 World
 
