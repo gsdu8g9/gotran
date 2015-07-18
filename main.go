@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/yuya-takeyama/argf"
 	"io"
 	"io/ioutil"
 	"os"
+
+	"github.com/yuya-takeyama/argf"
 )
 
 func guideToHelp() {
