@@ -46,7 +46,7 @@ type Option struct {
 	Expr      string
 	From      string
 	To        string
-	Files     []string
+	Reader    io.Reader
 }
 
 func ParseOption(args []string) (opt *Option, err error) {
@@ -60,10 +60,11 @@ func ParseOption(args []string) (opt *Option, err error) {
 	f.BoolVar(&opt.IsHelp, "help", false, "")
 	f.BoolVar(&opt.IsVersion, "v", false, "")
 	f.BoolVar(&opt.IsVersion, "version", false, "")
-
 	if err = f.Parse(args); err != nil {
 		return nil, err
 	}
+
+	var startARGF int
 	switch f.NArg() {
 	case 0:
 		return nil, fmt.Errorf("no specify FROM and TO language")
@@ -73,13 +74,21 @@ func ParseOption(args []string) (opt *Option, err error) {
 			return nil, fmt.Errorf("no specify TO language")
 		}
 		opt.From, opt.To = lang[0:2], lang[2:4]
-		opt.Files = f.Args()[1:]
+		startARGF = 1
 	default:
 		opt.From, opt.To = f.Arg(0), f.Arg(1)
-		opt.Files = f.Args()[2:]
+		startARGF = 2
 	}
+
 	if opt.Expr != "" {
-		opt.Expr, err = strconv.Unquote(`"` + opt.Expr + `"`)
+		expr, err := strconv.Unquote(`"` + opt.Expr + `"`)
+		if err != nil {
+			return nil, err
+		}
+		opt.Reader = strings.NewReader(expr)
+	} else {
+		files := f.Args()[startARGF:]
+		opt.Reader, err = argf.From(files)
 		if err != nil {
 			return nil, err
 		}
@@ -118,19 +127,7 @@ func _main() int {
 	}
 
 	t := NewTranslator(opt.From, opt.To)
-
-	var r io.Reader
-	if opt.Expr == "" {
-		r, err = argf.From(opt.Files)
-		if err != nil {
-			printErr(err)
-			guideToHelp()
-			return 2
-		}
-	} else {
-		r = strings.NewReader(opt.Expr)
-	}
-	if err = do(t, r); err != nil {
+	if err = do(t, opt.Reader); err != nil {
 		printErr(err)
 		return 1
 	}
