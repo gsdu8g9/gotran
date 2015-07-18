@@ -8,6 +8,12 @@ import (
 	"os"
 )
 
+func guideToHelp() {
+	os.Stderr.WriteString(`
+Try 'gotran --help' for more information.
+`[1:])
+}
+
 func usage() {
 	os.Stderr.WriteString(`
 Usage: gotran [OPTION]... FROM TO [FILE]...
