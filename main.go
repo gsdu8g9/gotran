@@ -32,6 +32,14 @@ v0.1.3
 `[1:])
 }
 
+type Option struct {
+	IsHelp    bool
+	IsVersion bool
+	From      string
+	To        string
+	Files     []string
+}
+
 func do(t *Translator, r io.Reader) error {
 	src, err := ioutil.ReadAll(r)
 	if err != nil {
