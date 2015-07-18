@@ -30,8 +30,9 @@ Usage
 $ gotran [OPTION]... FROM TO [FILE]...
 
 Options:
-	--help       show this help message
-	--version    print the version
+  -e, --expr=TEXT           translate TEXT
+  -h, --help                show this help message
+  -v, --version             print the version
 ```
 
 Language
