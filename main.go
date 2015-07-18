@@ -84,31 +84,37 @@ func do(t *Translator, r io.Reader) error {
 	return nil
 }
 
-func _main() error {
+func _main() int {
 	opt, err := ParseOption(os.Args[1:])
 	if err != nil {
-		return err
+		printErr(err)
+		guideToHelp()
+		return 2
 	}
 	switch {
 	case opt.IsHelp:
 		usage()
-		return nil
+		return 0
 	case opt.IsVersion:
 		version()
-		return nil
+		return 0
 	}
 
 	t := NewTranslator(opt.From, opt.To)
 	r, err := argf.From(opt.Files)
 	if err != nil {
-		return err
+		printErr(err)
+		guideToHelp()
+		return 2
 	}
-	return do(t, r)
+	if err = do(t, r); err != nil {
+		printErr(err)
+		return 1
+	}
+	return 0
 }
 
 func main() {
-	if err := _main(); err != nil {
-		fmt.Fprintln(os.Stderr, "gotran:", err)
-		os.Exit(1)
-	}
+	e := _main()
+	os.Exit(e)
 }
