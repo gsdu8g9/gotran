@@ -32,6 +32,10 @@ v0.1.3
 `[1:])
 }
 
+func printErr(err error) {
+	fmt.Fprintln(os.Stderr, "gotran:", err)
+}
+
 type Option struct {
 	IsHelp    bool
 	IsVersion bool
