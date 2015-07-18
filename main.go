@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/yuya-takeyama/argf"
 )
@@ -40,6 +41,7 @@ func printErr(err error) {
 type Option struct {
 	IsHelp    bool
 	IsVersion bool
+	Expr      string
 	From      string
 	To        string
 	Files     []string
@@ -50,6 +52,8 @@ func ParseOption(args []string) (opt *Option, err error) {
 	f := flag.NewFlagSet("gotran", flag.ContinueOnError)
 	f.SetOutput(ioutil.Discard)
 
+	f.StringVar(&opt.Expr, "e", "", "")
+	f.StringVar(&opt.Expr, "expr", "", "")
 	f.BoolVar(&opt.IsHelp, "h", false, "")
 	f.BoolVar(&opt.IsHelp, "help", false, "")
 	f.BoolVar(&opt.IsVersion, "v", false, "")
@@ -106,11 +110,17 @@ func _main() int {
 	}
 
 	t := NewTranslator(opt.From, opt.To)
-	r, err := argf.From(opt.Files)
-	if err != nil {
-		printErr(err)
-		guideToHelp()
-		return 2
+
+	var r io.Reader
+	if opt.Expr == "" {
+		r, err = argf.From(opt.Files)
+		if err != nil {
+			printErr(err)
+			guideToHelp()
+			return 2
+		}
+	} else {
+		r = strings.NewReader(opt.Expr)
 	}
 	if err = do(t, r); err != nil {
 		printErr(err)
