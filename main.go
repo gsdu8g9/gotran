@@ -44,8 +44,8 @@ type Option struct {
 	Expr      string `short:"e" long:"expr"`
 	IsHelp    bool   `short:"h" long:"help"`
 	IsVersion bool   `short:"v" long:"version"`
-	From      string
-	To        string
+	srcLang   string
+	dstLang   string
 	Reader    io.Reader
 }
 
@@ -67,7 +67,7 @@ func ParseOption(args []string) (opt *Option, err error) {
 		return nil, fmt.Errorf("no specify TO language")
 	}
 
-	opt.From, opt.To = leave[0], leave[1]
+	opt.srcLang, opt.dstLang = leave[0], leave[1]
 	if opt.Expr != "" {
 		expr, err := strconv.Unquote(`"` + opt.Expr + `"`)
 		if err != nil {
@@ -113,7 +113,7 @@ func _main() int {
 		return 0
 	}
 
-	t := NewTranslator(opt.From, opt.To)
+	t := NewTranslator(opt.srcLang, opt.dstLang)
 	if err = do(t, opt.Reader); err != nil {
 		printErr(err)
 		return 1

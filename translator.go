@@ -15,21 +15,21 @@ var (
 )
 
 type Translator struct {
-	from string
-	to   string
+	srcLang string
+	dstLang string
 }
 
-func NewTranslator(from, to string) *Translator {
+func NewTranslator(srcLang, dstLang string) *Translator {
 	return &Translator{
-		from: from,
-		to:   to,
+		srcLang: srcLang,
+		dstLang: dstLang,
 	}
 }
 
-func (t *Translator) fetchResult(src []byte) ([]byte, error) {
+func (t *Translator) fetchTranslated(src []byte) ([]byte, error) {
 	res, err := http.PostForm(TRANSLATE_URL, url.Values{
-		"sl":     {t.from},
-		"tl":     {t.to},
+		"sl":     {t.srcLang},
+		"tl":     {t.dstLang},
 		"ie":     {"UTF-8"},
 		"oe":     {"UTF-8"},
 		"client": {"t"},
@@ -62,7 +62,7 @@ func (t *Translator) extractText(b []byte) ([]byte, error) {
 }
 
 func (t *Translator) Translate(src []byte) ([]byte, error) {
-	b, err := t.fetchResult(src)
+	b, err := t.fetchTranslated(src)
 	if err != nil {
 		return nil, err
 	}
