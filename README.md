@@ -1,6 +1,8 @@
 gotran
 ======
 
+[![Build Status](https://travis-ci.org/kusabashira/gotran.svg?branch=master)](https://travis-ci.org/kusabashira/gotran)
+
 Translate FILE(s), or standard input.
 
 ```
