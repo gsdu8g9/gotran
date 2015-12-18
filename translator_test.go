@@ -37,3 +37,19 @@ func TestExtract(t *testing.T) {
 		}
 	}
 }
+
+func TestTranslate(t *testing.T) {
+	tr := NewTranslator("en", "ja")
+	src := []byte("Hello")
+
+	expect := []byte("こんにちは")
+	actual, err := tr.Translate(src)
+	if err != nil {
+		t.Fatalf("%#v.Translate(%q) returns %v, want nil",
+			tr, string(src), err)
+	}
+	if !reflect.DeepEqual(actual, expect) {
+		t.Errorf("%#v.Translate(%q) got %q: want %q",
+			tr, string(src), string(actual), string(expect))
+	}
+}
