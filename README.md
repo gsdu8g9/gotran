@@ -1,5 +1,5 @@
-gotran
-======
+gotran (doesn't work now)
+=========================
 
 [![Build Status](https://travis-ci.org/kusabashira/gotran.svg?branch=master)](https://travis-ci.org/kusabashira/gotran)
 
